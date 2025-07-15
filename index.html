@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Malla Curricular Medicina UBA</title>
+  <style>
+    body {
+      font-family: 'Georgia', serif;
+      background-color: #f4f9f9;
+      color: #333;
+      margin: 0;
+      padding: 1rem;
+    }
+
+    h1 {
+      font-family: 'Cursive', sans-serif;
+      text-align: center;
+      margin-bottom: 2rem;
+      color: #2c3e50;
+    }
+
+    .grid {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .column {
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      padding: 1rem;
+      min-width: 250px;
+    }
+
+    .column h2 {
+      font-family: 'Comic Sans MS', cursive;
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      color: #34495e;
+      text-align: center;
+    }
+
+    .subject {
+      background: #dfeef5;
+      border-left: 5px solid #2980b9;
+      margin-bottom: 0.5rem;
+      padding: 0.5rem;
+      border-radius: 4px;
+      cursor: pointer;
+      position: relative;
+      transition: background 0.3s;
+    }
+
+    .subject:hover {
+      background: #cfe4ef;
+    }
+
+    .subject.locked {
+      background: #eee;
+      border-left-color: #aaa;
+      cursor: not-allowed;
+      color: #888;
+    }
+
+    .subject.locked:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      background: #333;
+      color: #fff;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      top: 100%;
+      left: 0;
+      white-space: pre-line;
+      margin-top: 4px;
+      z-index: 1;
+    }
+
+    .subject.completed {
+      background: #b9f6ca;
+      border-left-color: #2e7d32;
+      text-decoration: line-through;
+    }
+  </style>
+</head>
+<body>
+  <h1>Malla Curricular - Medicina UBA</h1>
+  <div class="grid" id="grid"></div>
+
+  <script>
+    const materias = {
+      "CBC": [
+        { id: "quimica", nombre: "Química" },
+        { id: "sociedad", nombre: "Int. Con. Sociedad y Estado" },
+        { id: "pensamiento", nombre: "Int. Pensamiento Científico" },
+        { id: "matematica", nombre: "Matemática" },
+        { id: "fisica", nombre: "Física e Int. Biofísica" },
+        { id: "biologia", nombre: "Biología e Int. Biología Celular" }
+      ],
+      "Primer Año": [
+        { id: "anatomia", nombre: "Anatomía", req: ["quimica", "sociedad", "pensamiento", "matematica", "fisica", "biologia"] },
+        { id: "histologia", nombre: "Histología - Biología Celular Embriología - Genética", req: ["quimica", "sociedad", "pensamiento", "matematica", "fisica", "biologia"] },
+        { id: "salud1", nombre: "Salud Mental I", req: ["quimica", "sociedad", "pensamiento", "matematica", "fisica", "biologia"] },
+        { id: "bioetica1", nombre: "Bioética I", req: ["quimica", "sociedad", "pensamiento", "matematica", "fisica", "biologia"] },
+        { id: "medfamiliar", nombre: "Medicina Familiar", req: ["quimica", "sociedad", "pensamiento", "matematica", "fisica", "biologia"] }
+      ],
+      "Segundo Año": [
+        { id: "quimbio", nombre: "Química Biológica", req: ["anatomia", "histologia"] },
+        { id: "fisiologia", nombre: "Fisiología y Biofísica", req: ["anatomia", "histologia"] }
+      ],
+      "Tercer Año": [
+        { id: "micro1", nombre: "Microbiología y Parasitología I", req: ["quimbio", "fisiologia"] },
+        { id: "inmuno", nombre: "Inmunología Humana", req: ["quimbio", "fisiologia"] },
+        { id: "micro2", nombre: "Microbiología y Parasitología II", req: ["micro1", "inmuno"] },
+        { id: "patologia1", nombre: "Patología I", req: ["quimbio", "fisiologia"] },
+        { id: "farmaco1", nombre: "Farmacología I", req: ["quimbio", "fisiologia"] }
+      ],
+      "Ciclo Clínico": [
+        { id: "medicinaA", nombre: "Medicina A", req: ["micro1", "inmuno", "patologia1", "farmaco1", "salud1", "bioetica1"] },
+        { id: "patologia2", nombre: "Patología II", req: ["micro1", "inmuno", "patologia1", "farmaco1", "salud1", "bioetica1"] },
+        { id: "saludp1", nombre: "Salud Pública I", req: ["micro2"] },
+        { id: "farmaco2", nombre: "Farmacología II", req: ["medicinaA"] },
+        { id: "saludp2", nombre: "Salud Pública II", req: ["saludp1"] },
+        { id: "medlegal", nombre: "Medicina Legal", req: ["psiquiatria"] },
+        { id: "bioetica2", nombre: "Bioética II", req: ["bioetica1"] },
+        { id: "toxico", nombre: "Toxicología", req: ["medicinaA", "patologia2"] },
+
+        // Clínicas y Quirúrgicas
+        { id: "medB", nombre: "Medicina B", req: ["medicinaA", "patologia2"] },
+        { id: "nutricion", nombre: "Nutrición", req: ["medicinaA", "patologia2"] },
+        { id: "diagnostico", nombre: "Diagnóstico por Imágenes", req: ["medicinaA", "patologia2"] },
+        { id: "dermato", nombre: "Dermatología", req: ["medicinaA", "patologia2"] },
+        { id: "infecto", nombre: "Infectología", req: ["medicinaA", "patologia2"] },
+        { id: "neumono", nombre: "Neumonología", req: ["medicinaA", "patologia2"] },
+        { id: "neuro", nombre: "Neurología", req: ["medicinaA", "patologia2"] },
+        { id: "psiquiatria", nombre: "Psiquiatría", req: ["medicinaA", "patologia2"] },
+        { id: "pediatria", nombre: "Pediatría", req: ["medicinaA", "patologia2"] },
+        { id: "obstetricia", nombre: "Obstetricia", req: ["medicinaA", "patologia2"] },
+        { id: "ginecologia", nombre: "Ginecología", req: ["medicinaA", "patologia2"] },
+        { id: "cirugia", nombre: "Cirugía General", req: ["medicinaA", "patologia2"] },
+        { id: "urologia", nombre: "Urología", req: ["medicinaA", "patologia2"] },
+        { id: "ortopedia", nombre: "Ortopedia-Traumatología", req: ["medicinaA", "patologia2"] },
+        { id: "oftalmo", nombre: "Oftalmología", req: ["medicinaA", "patologia2"] },
+        { id: "otorrino", nombre: "Otorrinolaringología", req: ["medicinaA", "patologia2"] },
+        { id: "neurocirugia", nombre: "Neurocirugía", req: ["medicinaA", "patologia2"] }
+      ],
+      "Internado Anual": [
+        { id: "clinica", nombre: "Clínica Médica", req: ["medB", "toxico", "psiquiatria", "ginecologia", "cirugia", "pediatria"] },
+        { id: "internado_cirugia", nombre: "Cirugía", req: ["medB", "toxico", "psiquiatria", "ginecologia", "cirugia", "pediatria"] },
+        { id: "internado_toco", nombre: "Tocoginecología", req: ["medB", "toxico", "psiquiatria", "ginecologia", "cirugia", "pediatria"] },
+        { id: "internado_pedia", nombre: "Pediatría Internado", req: ["medB", "toxico", "psiquiatria", "ginecologia", "cirugia", "pediatria"] },
+        { id: "salud2", nombre: "Salud Mental II", req: ["medB", "toxico", "psiquiatria", "ginecologia", "cirugia", "pediatria"] },
+        { id: "aps", nombre: "APS", req: ["medB", "toxico", "psiquiatria", "ginecologia", "cirugia", "pediatria"] },
+        { id: "modulo", nombre: "Módulo Específico / Curso de Residencia", req: ["medB", "toxico", "psiquiatria", "ginecologia", "cirugia", "pediatria"] }
+      ]
+    };
+
+    const aprobadas = new Set(JSON.parse(localStorage.getItem("materiasAprobadas") || "[]"));
+
+    const grid = document.getElementById("grid");
+
+    function render() {
+      grid.innerHTML = "";
+      for (const ciclo in materias) {
+        const col = document.createElement("div");
+        col.className = "column";
+        const titulo = document.createElement("h2");
+        titulo.textContent = ciclo;
+        col.appendChild(titulo);
+
+        materias[ciclo].forEach(m => {
+          const div = document.createElement("div");
+          div.className = "subject";
+          div.textContent = m.nombre;
+
+          const requisitos = m.req || [];
+          const faltan = requisitos.filter(r => !aprobadas.has(r));
+          if (faltan.length) {
+            div.classList.add("locked");
+            div.setAttribute("data-tooltip", "Requiere:\n" + faltan.map(id => buscarNombre(id)).join("\n"));
+          } else {
+            div.addEventListener("click", () => {
+              if (aprobadas.has(m.id)) {
+                aprobadas.delete(m.id);
+              } else {
+                aprobadas.add(m.id);
+              }
+              localStorage.setItem("materiasAprobadas", JSON.stringify([...aprobadas]));
+              render();
+            });
+          }
+
+          if (aprobadas.has(m.id)) {
+            div.classList.add("completed");
+          }
+
+          col.appendChild(div);
+        });
+
+        grid.appendChild(col);
+      }
+    }
+
+    function buscarNombre(id) {
+      for (const ciclo in materias) {
+        for (const m of materias[ciclo]) {
+          if (m.id === id) return m.nombre;
+        }
+      }
+      return id;
+    }
+
+    render();
+  </script>
+</body>
+</html>
