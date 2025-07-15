@@ -2,93 +2,121 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Malla Curricular Medicina UBA</title>
+  <title>Plan de Estudios - Medicina UBA</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body {
-      font-family: 'Georgia', serif;
-      background-color: #f4f9f9;
-      color: #333;
+      font-family: 'Segoe UI', sans-serif;
+      background: #fff;
       margin: 0;
-      padding: 1rem;
+      padding: 0;
+      color: #222;
     }
 
-    h1 {
-      font-family: 'Cursive', sans-serif;
-      text-align: center;
-      margin-bottom: 2rem;
-      color: #2c3e50;
+    header {
+      display: flex;
+      align-items: center;
+      padding: 1rem;
+      background: #fff;
+      border-bottom: 2px solid #e74c3c;
+    }
+
+    header img {
+      height: 80px;
+      margin-right: 1rem;
+    }
+
+    header h1 {
+      color: #e74c3c;
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin: 0;
     }
 
     .grid {
       display: flex;
-      gap: 1rem;
       flex-wrap: wrap;
       justify-content: center;
+      gap: 1rem;
+      padding: 1rem;
     }
 
     .column {
-      background: #ffffff;
-      border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      background: #fff;
+      border: 2px solid #e74c3c;
+      border-radius: 4px;
       padding: 1rem;
-      min-width: 250px;
+      min-width: 240px;
+      max-width: 260px;
     }
 
     .column h2 {
-      font-family: 'Comic Sans MS', cursive;
-      font-size: 1.2rem;
-      margin-bottom: 1rem;
-      color: #34495e;
+      background: #e74c3c;
+      color: white;
+      padding: 0.4rem;
       text-align: center;
+      font-size: 1rem;
+      border-radius: 2px;
+      margin: -1rem -1rem 1rem -1rem;
     }
 
     .subject {
-      background: #dfeef5;
-      border-left: 5px solid #2980b9;
-      margin-bottom: 0.5rem;
+      border: 2px solid #e67e22;
       padding: 0.5rem;
-      border-radius: 4px;
+      margin-bottom: 0.5rem;
+      background: #fff;
       cursor: pointer;
+      border-radius: 3px;
       position: relative;
       transition: background 0.3s;
     }
 
     .subject:hover {
-      background: #cfe4ef;
+      background: #fdf2e3;
     }
 
     .subject.locked {
-      background: #eee;
-      border-left-color: #aaa;
+      background: #f9f9f9;
+      color: #aaa;
+      border-color: #ccc;
       cursor: not-allowed;
-      color: #888;
     }
 
     .subject.locked:hover::after {
       content: attr(data-tooltip);
       position: absolute;
-      background: #333;
-      color: #fff;
-      padding: 4px 8px;
+      background: rgba(0, 0, 0, 0.75);
+      color: white;
+      padding: 5px 8px;
       border-radius: 4px;
       font-size: 0.8rem;
       top: 100%;
       left: 0;
       white-space: pre-line;
-      margin-top: 4px;
-      z-index: 1;
+      z-index: 10;
     }
 
     .subject.completed {
-      background: #b9f6ca;
-      border-left-color: #2e7d32;
+      background: #d5f5e3;
+      border-color: #27ae60;
       text-decoration: line-through;
+      color: #2e7d32;
+    }
+
+    @media (max-width: 768px) {
+      .grid {
+        flex-direction: column;
+        align-items: center;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>Malla Curricular - Medicina UBA</h1>
+  <header>
+    <img src="logo-uba.png" alt="Logo UBA" />
+    <h1>Plan de Estudios ▸ Medicina</h1>
+  </header>
+
   <div class="grid" id="grid"></div>
 
   <script>
@@ -101,18 +129,18 @@
         { id: "fisica", nombre: "Física e Int. Biofísica" },
         { id: "biologia", nombre: "Biología e Int. Biología Celular" }
       ],
-      "Primer Año": [
+      "Ciclo Biomédico - Primer Año": [
         { id: "anatomia", nombre: "Anatomía", req: ["quimica", "sociedad", "pensamiento", "matematica", "fisica", "biologia"] },
         { id: "histologia", nombre: "Histología - Biología Celular Embriología - Genética", req: ["quimica", "sociedad", "pensamiento", "matematica", "fisica", "biologia"] },
         { id: "salud1", nombre: "Salud Mental I", req: ["quimica", "sociedad", "pensamiento", "matematica", "fisica", "biologia"] },
         { id: "bioetica1", nombre: "Bioética I", req: ["quimica", "sociedad", "pensamiento", "matematica", "fisica", "biologia"] },
         { id: "medfamiliar", nombre: "Medicina Familiar", req: ["quimica", "sociedad", "pensamiento", "matematica", "fisica", "biologia"] }
       ],
-      "Segundo Año": [
+      "Ciclo Biomédico - Segundo Año": [
         { id: "quimbio", nombre: "Química Biológica", req: ["anatomia", "histologia"] },
         { id: "fisiologia", nombre: "Fisiología y Biofísica", req: ["anatomia", "histologia"] }
       ],
-      "Tercer Año": [
+      "Ciclo Biomédico - Tercer Año": [
         { id: "micro1", nombre: "Microbiología y Parasitología I", req: ["quimbio", "fisiologia"] },
         { id: "inmuno", nombre: "Inmunología Humana", req: ["quimbio", "fisiologia"] },
         { id: "micro2", nombre: "Microbiología y Parasitología II", req: ["micro1", "inmuno"] },
@@ -125,11 +153,12 @@
         { id: "saludp1", nombre: "Salud Pública I", req: ["micro2"] },
         { id: "farmaco2", nombre: "Farmacología II", req: ["medicinaA"] },
         { id: "saludp2", nombre: "Salud Pública II", req: ["saludp1"] },
-        { id: "medlegal", nombre: "Medicina Legal", req: ["psiquiatria"] },
         { id: "bioetica2", nombre: "Bioética II", req: ["bioetica1"] },
-        { id: "toxico", nombre: "Toxicología", req: ["medicinaA", "patologia2"] },
-
-        // Clínicas y Quirúrgicas
+        { id: "psiquiatria", nombre: "Psiquiatría", req: ["medicinaA", "patologia2"] },
+        { id: "medlegal", nombre: "Medicina Legal", req: ["psiquiatria"] },
+        { id: "toxico", nombre: "Toxicología", req: ["medicinaA", "patologia2"] }
+      ],
+      "Clínicas": [
         { id: "medB", nombre: "Medicina B", req: ["medicinaA", "patologia2"] },
         { id: "nutricion", nombre: "Nutrición", req: ["medicinaA", "patologia2"] },
         { id: "diagnostico", nombre: "Diagnóstico por Imágenes", req: ["medicinaA", "patologia2"] },
@@ -137,7 +166,9 @@
         { id: "infecto", nombre: "Infectología", req: ["medicinaA", "patologia2"] },
         { id: "neumono", nombre: "Neumonología", req: ["medicinaA", "patologia2"] },
         { id: "neuro", nombre: "Neurología", req: ["medicinaA", "patologia2"] },
-        { id: "psiquiatria", nombre: "Psiquiatría", req: ["medicinaA", "patologia2"] },
+        { id: "psiquiatria", nombre: "Psiquiatría", req: ["medicinaA", "patologia2"] }
+      ],
+      "Quirúrgicas": [
         { id: "pediatria", nombre: "Pediatría", req: ["medicinaA", "patologia2"] },
         { id: "obstetricia", nombre: "Obstetricia", req: ["medicinaA", "patologia2"] },
         { id: "ginecologia", nombre: "Ginecología", req: ["medicinaA", "patologia2"] },
@@ -148,11 +179,11 @@
         { id: "otorrino", nombre: "Otorrinolaringología", req: ["medicinaA", "patologia2"] },
         { id: "neurocirugia", nombre: "Neurocirugía", req: ["medicinaA", "patologia2"] }
       ],
-      "Internado Anual": [
+      "Ciclo Internado Anual Rotatorio": [
         { id: "clinica", nombre: "Clínica Médica", req: ["medB", "toxico", "psiquiatria", "ginecologia", "cirugia", "pediatria"] },
         { id: "internado_cirugia", nombre: "Cirugía", req: ["medB", "toxico", "psiquiatria", "ginecologia", "cirugia", "pediatria"] },
         { id: "internado_toco", nombre: "Tocoginecología", req: ["medB", "toxico", "psiquiatria", "ginecologia", "cirugia", "pediatria"] },
-        { id: "internado_pedia", nombre: "Pediatría Internado", req: ["medB", "toxico", "psiquiatria", "ginecologia", "cirugia", "pediatria"] },
+        { id: "internado_pedia", nombre: "Pediatría", req: ["medB", "toxico", "psiquiatria", "ginecologia", "cirugia", "pediatria"] },
         { id: "salud2", nombre: "Salud Mental II", req: ["medB", "toxico", "psiquiatria", "ginecologia", "cirugia", "pediatria"] },
         { id: "aps", nombre: "APS", req: ["medB", "toxico", "psiquiatria", "ginecologia", "cirugia", "pediatria"] },
         { id: "modulo", nombre: "Módulo Específico / Curso de Residencia", req: ["medB", "toxico", "psiquiatria", "ginecologia", "cirugia", "pediatria"] }
@@ -160,7 +191,6 @@
     };
 
     const aprobadas = new Set(JSON.parse(localStorage.getItem("materiasAprobadas") || "[]"));
-
     const grid = document.getElementById("grid");
 
     function render() {
@@ -218,3 +248,4 @@
   </script>
 </body>
 </html>
+
